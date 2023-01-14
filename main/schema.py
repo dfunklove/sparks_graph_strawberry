@@ -1,71 +1,71 @@
 from strawberry_django_plus import gql
-#from strawberry_django import auto
+from strawberry_django import auto
 from typing import Iterable, List, Optional, Type, cast
 from . import models
 
 @gql.django.type(models.Lesson)
 class Lesson:
     id: gql.ID
-    notes: gql.auto
+    notes: auto
 
 @gql.django.type(models.School)
 class School:
     id: gql.ID
-    name: gql.auto
+    name: auto
 
 @gql.django.type(models.Student)
 class Student:
     id: gql.ID
-    first_name: gql.auto
-    last_name: gql.auto
+    first_name: auto
+    last_name: auto
 
 @gql.django.type(models.User)
 class User:
     id: gql.ID
-    first_name: gql.auto
-    last_name: gql.auto
-    email: gql.auto
-    password_digest: gql.auto
+    first_name: auto
+    last_name: auto
+    email: auto
+    password_digest: auto
 
 @gql.django.input(models.Lesson)
 class LessonInput:
-    notes: gql.auto
+    notes: auto
     school: "SchoolInputPartial"
     student: "StudentInputPartial"
-    time_in: gql.auto
-    time_out: gql.auto
+    time_in: auto
+    time_out: auto
     user: "UserInputPartial"
 
 @gql.django.input(models.User)
 class UserInput:
-    first_name: gql.auto
-    last_name: gql.auto
-    email: gql.auto
-    password_digest: gql.auto
+    first_name: auto
+    last_name: auto
+    email: auto
+    password_digest: auto
 
 @gql.django.partial(models.Lesson)
 class LessonInputPartial(gql.NodeInputPartial):
     id: gql.ID
-    notes: gql.auto
+    notes: auto
 
 @gql.django.partial(models.School)
 class SchoolInputPartial(gql.NodeInputPartial):
     id: gql.ID
-    name: gql.auto
+    name: auto
 
 @gql.django.partial(models.Student)
 class StudentInputPartial(gql.NodeInputPartial):
     id: gql.ID
-    first_name: gql.auto
-    last_name: gql.auto
+    first_name: auto
+    last_name: auto
 
 @gql.django.partial(models.User)
 class UserInputPartial(gql.NodeInputPartial):
     id: gql.ID
-    first_name: gql.auto
-    last_name: gql.auto
-    email: gql.auto
-    password_digest: gql.auto
+    first_name: auto
+    last_name: auto
+    email: auto
+    password_digest: auto
 
 @gql.type
 class Query:
