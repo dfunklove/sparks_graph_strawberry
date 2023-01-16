@@ -6,7 +6,11 @@ from . import models
 @gql.django.type(models.Lesson)
 class Lesson:
     id: gql.ID
-    notes: auto
+    school: "School"
+    student: "Student"
+    time_in: auto
+    time_out: auto
+    user: "User"
 
 @gql.django.type(models.School)
 class School:
@@ -18,6 +22,7 @@ class Student:
     id: gql.ID
     first_name: auto
     last_name: auto
+    school: "School"
 
 @gql.django.type(models.User)
 class User:
@@ -34,7 +39,17 @@ class LessonInput:
     student: "StudentInputPartial"
     time_in: auto
     time_out: auto
-    user: "UserInputPartial"
+    user: "UserInput"
+
+@gql.django.input(models.School)
+class SchoolInput:
+    name: auto
+
+@gql.django.input(models.Student)
+class StudentInput:
+    first_name: auto
+    last_name: auto
+    school: "SchoolInputPartial"
 
 @gql.django.input(models.User)
 class UserInput:
@@ -47,7 +62,12 @@ class UserInput:
 class LessonInputPartial(gql.NodeInputPartial):
     id: gql.ID
     notes: auto
-
+    school: "SchoolInputPartial"
+    student: "StudentInputPartial"
+    time_in: auto
+    time_out: auto
+    user: "UserInputPartial"
+    
 @gql.django.partial(models.School)
 class SchoolInputPartial(gql.NodeInputPartial):
     id: gql.ID
@@ -58,6 +78,7 @@ class StudentInputPartial(gql.NodeInputPartial):
     id: gql.ID
     first_name: auto
     last_name: auto
+    school: "SchoolInputPartial"
 
 @gql.django.partial(models.User)
 class UserInputPartial(gql.NodeInputPartial):
@@ -71,6 +92,10 @@ class UserInputPartial(gql.NodeInputPartial):
 class Query:
     lesson: Lesson = gql.django.field()
     lessons: list[Lesson] = gql.django.field()
+    school: School = gql.django.field()
+    schools: list[School] = gql.django.field()
+    student: Student = gql.django.field()
+    students: list[Student] = gql.django.field()
     user: User = gql.django.field()
     users: list[User] = gql.django.field()
 
