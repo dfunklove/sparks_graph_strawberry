@@ -39,7 +39,7 @@ class LessonInput:
     student: "StudentInputPartial"
     time_in: auto
     time_out: auto
-    user: "UserInput"
+    user: "UserInputPartial"
 
 @gql.django.input(models.School)
 class SchoolInput:
