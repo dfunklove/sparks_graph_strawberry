@@ -7,6 +7,7 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 from django.db.models import Q
+import custom_user
 
 BCRYPT_HASH_LEN = 64
 CHAR_FIELD_LEN = 64
@@ -36,7 +37,7 @@ class GroupLesson(models.Model):
     notes = models.TextField(blank=True, null=True)
     time_in = models.DateTimeField()
     time_out = models.DateTimeField(blank=True, null=True)
-    user = models.ForeignKey('User', models.CASCADE)
+    user = models.ForeignKey(custom_user.models.User, models.CASCADE)
 
     class Meta:
         db_table = 'group_lessons'
@@ -54,7 +55,7 @@ class Lesson(models.Model):
     student = models.ForeignKey('Student', models.CASCADE)
     time_in = models.DateTimeField()
     time_out = models.DateTimeField(blank=True, null=True)
-    user = models.ForeignKey('User', models.CASCADE)
+    user = models.ForeignKey(custom_user.models.User, models.CASCADE)
 
     class Meta:
         db_table = 'lessons'
@@ -64,7 +65,7 @@ class Lesson(models.Model):
 class Login(models.Model):
     time_in = models.DateTimeField()
     time_out = models.DateTimeField(blank=True, null=True)
-    user = models.ForeignKey('User', models.CASCADE)
+    user = models.ForeignKey(custom_user.models.User, models.CASCADE)
 
     class Meta:
         db_table = 'logins'
@@ -98,6 +99,9 @@ class Student(models.Model):
 
     class Meta:
         db_table = 'students'
+
+""" This is left as a reference since we have different user model that is compatible with Django auth.
+That model is defined in its own app.
 
 class User(models.Model):
     ADMIN = "Admin"
@@ -146,3 +150,4 @@ class Teacher(User):
 
     class Meta:
         proxy = True
+"""

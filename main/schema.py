@@ -3,6 +3,7 @@ from strawberry_django import auto
 from typing import Iterable, List, Optional, Type, cast
 from datetime import datetime
 from . import models
+import custom_user
 
 @gql.django.type(models.Lesson)
 class Lesson:
@@ -25,13 +26,13 @@ class Student:
     last_name: auto
     school: "School"
 
-@gql.django.type(models.User)
+@gql.django.type(custom_user.models.User)
 class User:
     id: gql.ID
     first_name: auto
     last_name: auto
     email: auto
-    password_digest: auto
+    password: auto
 
 @gql.django.input(models.Lesson)
 class LessonInput:
@@ -52,12 +53,12 @@ class StudentInput:
     last_name: auto
     school: "SchoolInputPartial"
 
-@gql.django.input(models.User)
+@gql.django.input(custom_user.models.User)
 class UserInput:
     first_name: auto
     last_name: auto
     email: auto
-    password_digest: auto
+    password: auto
 
 @gql.django.partial(models.Lesson)
 class LessonInputPartial(gql.NodeInputPartial):
@@ -81,13 +82,13 @@ class StudentInputPartial(gql.NodeInputPartial):
     last_name: Optional[str]
     school: Optional["SchoolInputPartial"]
 
-@gql.django.partial(models.User)
+@gql.django.partial(custom_user.models.User)
 class UserInputPartial(gql.NodeInputPartial):
     id: gql.ID
     first_name: Optional[str]
     last_name: Optional[str]
     email: Optional[str]
-    password_digest: Optional[str]
+    password: Optional[str]
 
 @gql.type
 class Query:
