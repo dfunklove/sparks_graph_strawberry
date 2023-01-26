@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
 from strawberry.django.views import GraphQLView

@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
     'custom_user.apps.CustomUserConfig',
-    'gqlauth',
     'main',
+    'strawberry_django_jwt.refresh_token',
 ]
 
 MIDDLEWARE = [
@@ -58,11 +58,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'gqlauth.core.middlewares.django_jwt_middleware'
 ]
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
+    'strawberry_django_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'sparks_graph.urls'
