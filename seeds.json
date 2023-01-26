@@ -131,7 +131,7 @@
   "model": "custom_user.user",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$390000$Zm86IgFMDqw23YLcK84H6f$w1LVnQA4wztXHik51YB9LKaxw7r/8aUf4GhE3RpMWlA=",
+    "password": "pbkdf2_sha256$390000$264ndiqiWNRVlXSGc1DYrm$aLb9WIsv5M6fJ6Y2Ly/AINzQpc8rd/2WY6l85YbbA1k=",
     "last_login": "2023-01-26T03:43:57.553Z",
     "is_superuser": false,
     "first_name": "Ima",
@@ -149,7 +149,7 @@
   "model": "custom_user.user",
   "pk": 2,
   "fields": {
-    "password": "sparksISgr8*",
+    "password": "pbkdf2_sha256$390000$pdgI1dXcQ7GkoYRK4uvgGm$iAYjKXt+GJ2yk7X5KejYEhqdPT3R2ut71r0hxvgXYzQ=",
     "last_login": null,
     "is_superuser": false,
     "first_name": "Cynthia",
