@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from gqlauth.settings_type import GqlAuthSettings
+from os import path
 from pathlib import Path
+from strawberry.annotation import StrawberryAnnotation
+from strawberry.field import StrawberryField
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,8 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'django_use_email_as_username.apps.DjangoUseEmailAsUsernameConfig',
     'custom_user.apps.CustomUserConfig',
+    'gqlauth',
     'main',
 ]
 
@@ -52,6 +58,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'gqlauth.core.middlewares.django_jwt_middleware'
+]
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 ROOT_URLCONF = 'sparks_graph.urls'
@@ -142,9 +153,15 @@ CSRF_TRUSTED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-GRAPHENE = {
-    "SCHEMA": "main.schema.schema"
-}
+# Used for gqlauth in dev/test
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+GQL_AUTH = GqlAuthSettings(
+    ALLOW_LOGIN_NOT_VERIFIED=True,
+    LOGIN_FIELDS=[StrawberryField(python_name="email", default=None, type_annotation=StrawberryAnnotation(str))],
+    LOGIN_REQUIRE_CAPTCHA=False,
+    REGISTER_REQUIRE_CAPTCHA=False,
+)
 
 LOGGING = {
     'version': 1,
