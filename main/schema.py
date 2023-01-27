@@ -22,25 +22,6 @@ class Lesson:
     time_out: auto
     user: "User"
 
-@gql.django.type(models.School)
-class School:
-    id: gql.ID
-    name: auto
-
-@gql.django.type(models.Student)
-class Student:
-    id: gql.ID
-    first_name: auto
-    last_name: auto
-    school: "School"
-
-@gql.django.type(custom_user.models.User)
-class User:
-    id: gql.ID
-    first_name: auto
-    last_name: auto
-    email: auto
-
 @gql.django.input(models.Lesson)
 class LessonInput:
     notes: auto
@@ -49,23 +30,6 @@ class LessonInput:
     time_in: auto
     time_out: auto
     user: "UserInputPartial"
-
-@gql.django.input(models.School)
-class SchoolInput:
-    name: auto
-
-@gql.django.input(models.Student)
-class StudentInput:
-    first_name: auto
-    last_name: auto
-    school: "SchoolInputPartial"
-
-@gql.django.input(custom_user.models.User)
-class UserInput:
-    first_name: auto
-    last_name: auto
-    email: auto
-    password: auto
 
 @gql.django.partial(models.Lesson)
 class LessonInputPartial(gql.NodeInputPartial):
@@ -77,10 +41,32 @@ class LessonInputPartial(gql.NodeInputPartial):
     time_out: Optional[datetime]
     user: Optional["UserInputPartial"]
     
+@gql.django.type(models.School)
+class School:
+    id: gql.ID
+    name: auto
+
+@gql.django.input(models.School)
+class SchoolInput:
+    name: auto
+
 @gql.django.partial(models.School)
 class SchoolInputPartial(gql.NodeInputPartial):
     id: gql.ID
     name: Optional[str]
+
+@gql.django.type(models.Student)
+class Student:
+    id: gql.ID
+    first_name: auto
+    last_name: auto
+    school: "School"
+
+@gql.django.input(models.Student)
+class StudentInput:
+    first_name: auto
+    last_name: auto
+    school: "SchoolInputPartial"
 
 @gql.django.partial(models.Student)
 class StudentInputPartial(gql.NodeInputPartial):
@@ -88,6 +74,20 @@ class StudentInputPartial(gql.NodeInputPartial):
     first_name: Optional[str]
     last_name: Optional[str]
     school: Optional["SchoolInputPartial"]
+
+@gql.django.type(custom_user.models.User)
+class User:
+    id: gql.ID
+    first_name: auto
+    last_name: auto
+    email: auto
+
+@gql.django.input(custom_user.models.User)
+class UserInput:
+    first_name: auto
+    last_name: auto
+    email: auto
+    password: auto
 
 @gql.django.partial(custom_user.models.User)
 class UserInputPartial(gql.NodeInputPartial):
