@@ -163,6 +163,10 @@ GQL_AUTH = GqlAuthSettings(
     REGISTER_REQUIRE_CAPTCHA=False,
 )
 
+GRAPHQL_JWT = {
+    "JWT_AUTHENTICATE_INTROSPECTION": False,
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
