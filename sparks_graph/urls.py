@@ -19,10 +19,9 @@ from django.contrib.auth.models import User
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
 from strawberry.django.views import GraphQLView
-from main.schema import login_schema, schema
+from main.schema import schema
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('graphql', csrf_exempt(GraphQLView.as_view(schema=schema))),
-    path('login', csrf_exempt(GraphQLView.as_view(schema=login_schema))),
 ]
