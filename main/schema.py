@@ -1,7 +1,10 @@
 from datetime import datetime
+from django.contrib.auth.middleware import get_user
+from strawberry.types.info import Info
 from strawberry_django import auto
 from strawberry_django_jwt.decorators import login_required
 from strawberry_django_jwt.middleware import JSONWebTokenMiddleware
+from strawberry_django_jwt.utils import get_context
 import strawberry_django_jwt.mutations as jwt_mutations
 from strawberry_django_plus import gql
 from strawberry_django_plus.directives import SchemaDirectiveExtension
@@ -37,7 +40,6 @@ class User:
     first_name: auto
     last_name: auto
     email: auto
-    password: auto
 
 @gql.django.input(models.Lesson)
 class LessonInput:
@@ -97,13 +99,22 @@ class UserInputPartial(gql.NodeInputPartial):
 
 @gql.type
 class Query:
+    @login_required
+    @gql.django.field
+    def user(self, email: Optional[str] = None, id: Optional[gql.ID] = None) -> Optional[User]:
+        params = {}
+        if (email):
+            params["email"] = email
+        if (id):
+            params["id"] = id
+        return custom_user.models.User.objects.filter(**params).first()
+    
     lesson: Lesson = login_required(gql.django.field())
     lessons: list[Lesson] = login_required(gql.django.field())
     school: School = login_required(gql.django.field())
     schools: list[School] = login_required(gql.django.field())
     student: Student = login_required(gql.django.field())
     students: list[Student] = login_required(gql.django.field())
-    user: User = login_required(gql.django.field())
     users: list[User] = login_required(gql.django.field())
 
 @gql.type
@@ -114,19 +125,10 @@ class Mutation:
     create_user: User = login_required(gql.django.create_mutation(UserInput))
     update_user: User = login_required(gql.django.update_mutation(UserInputPartial))
     delete_user: User = login_required(gql.django.delete_mutation(gql.NodeInput))
-
-schema = gql.Schema(query=Query, mutation=Mutation, extensions=[JSONWebTokenMiddleware])
-
-# This is just a placeholder
-@gql.type
-class LoginQuery:
-    user: User = gql.django.field()
-
-@gql.type
-class LoginMutation:
+    # JWT Mutations
     token_auth = jwt_mutations.ObtainJSONWebToken.obtain
     verify_token = jwt_mutations.Verify.verify
     refresh_token = jwt_mutations.Refresh.refresh
     delete_token_cookie = jwt_mutations.DeleteJSONWebTokenCookie.delete_cookie
 
-login_schema = gql.Schema(query=LoginQuery, mutation=LoginMutation)
+schema = gql.Schema(query=Query, mutation=Mutation, extensions=[JSONWebTokenMiddleware])
