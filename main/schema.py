@@ -2,6 +2,7 @@ from datetime import datetime
 from django.contrib.auth.middleware import get_user
 from strawberry.types.info import Info
 from strawberry_django import auto
+from strawberry_django.fields.types import ManyToOneInput, OneToManyInput
 from strawberry_django_jwt.decorators import login_required
 from strawberry_django_jwt.middleware import JSONWebTokenMiddleware
 from strawberry_django_jwt.utils import get_context
@@ -13,9 +14,24 @@ from typing import Iterable, List, Optional, Type, cast
 from . import models
 import custom_user
 
+@gql.django.type(models.Goal)
+class Goal:
+    id: gql.ID
+    name: auto
+
+@gql.django.input(models.Goal)
+class GoalInput:
+    id: gql.ID
+    name: auto
+
+@gql.django.partial(models.Goal)
+class GoalInputPartial:
+    id: gql.ID
+
 @gql.django.type(models.Lesson)
 class Lesson:
     id: gql.ID
+    rating_set: List["Rating"]
     school: "School"
     student: "Student"
     time_in: auto
@@ -32,15 +48,35 @@ class LessonInput:
     user: "UserInputPartial"
 
 @gql.django.partial(models.Lesson)
-class LessonInputPartial(gql.NodeInputPartial):
+class LessonInputPartial:
     id: gql.ID
     notes: Optional[str]
+    rating_set: Optional[List["RatingInputPartial"]]
     school: Optional["SchoolInputPartial"]
     student: Optional["StudentInputPartial"]
     time_in: Optional[datetime]
     time_out: Optional[datetime]
     user: Optional["UserInputPartial"]
-    
+
+@gql.django.type(models.Rating)
+class Rating:
+    id: gql.ID
+    goal: Goal
+    lesson: Lesson
+    score: auto
+
+@gql.django.input(models.Rating)
+class RatingInput:
+    goal: GoalInputPartial
+    lesson: LessonInputPartial
+    score: auto
+
+@gql.django.partial(models.Rating)
+class RatingInputPartial:
+    goal_id: gql.ID
+    lesson_id: gql.ID
+    score: auto
+
 @gql.django.type(models.School)
 class School:
     id: gql.ID
@@ -51,7 +87,7 @@ class SchoolInput:
     name: auto
 
 @gql.django.partial(models.School)
-class SchoolInputPartial(gql.NodeInputPartial):
+class SchoolInputPartial:
     id: gql.ID
     name: Optional[str]
 
@@ -61,6 +97,7 @@ class Student:
     first_name: auto
     last_name: auto
     school: "School"
+    goals: List["Goal"]
 
 @gql.django.input(models.Student)
 class StudentInput:
@@ -69,7 +106,7 @@ class StudentInput:
     school: "SchoolInputPartial"
 
 @gql.django.partial(models.Student)
-class StudentInputPartial(gql.NodeInputPartial):
+class StudentInputPartial:
     id: gql.ID
     first_name: Optional[str]
     last_name: Optional[str]
@@ -90,7 +127,7 @@ class UserInput:
     password: auto
 
 @gql.django.partial(custom_user.models.User)
-class UserInputPartial(gql.NodeInputPartial):
+class UserInputPartial:
     id: gql.ID
     first_name: Optional[str]
     last_name: Optional[str]
@@ -122,6 +159,7 @@ class Mutation:
     create_lesson: Lesson = login_required(gql.django.create_mutation(LessonInput))
     update_lesson: Lesson = login_required(gql.django.update_mutation(LessonInputPartial))
     delete_lesson: Lesson = login_required(gql.django.delete_mutation(gql.NodeInput))
+    create_rating: Rating = login_required(gql.django.create_mutation(RatingInput))
     create_user: User = login_required(gql.django.create_mutation(UserInput))
     update_user: User = login_required(gql.django.update_mutation(UserInputPartial))
     delete_user: User = login_required(gql.django.delete_mutation(gql.NodeInput))
