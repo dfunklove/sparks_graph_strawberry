@@ -25,7 +25,7 @@ class GoalInput:
     name: auto
 
 @gql.django.partial(models.Goal)
-class GoalInputPartial:
+class GoalInputPartial(gql.NodeInputPartial):
     id: gql.ID
 
 @gql.django.type(models.Lesson)
@@ -48,7 +48,7 @@ class LessonInput:
     user: "UserInputPartial"
 
 @gql.django.partial(models.Lesson)
-class LessonInputPartial:
+class LessonInputPartial(gql.NodeInputPartial):
     id: gql.ID
     notes: Optional[str]
     rating_set: Optional[List["RatingInputPartial"]]
@@ -72,7 +72,7 @@ class RatingInput:
     score: auto
 
 @gql.django.partial(models.Rating)
-class RatingInputPartial:
+class RatingInputPartial(gql.NodeInputPartial):
     goal_id: gql.ID
     lesson_id: gql.ID
     score: auto
@@ -87,7 +87,7 @@ class SchoolInput:
     name: auto
 
 @gql.django.partial(models.School)
-class SchoolInputPartial:
+class SchoolInputPartial(gql.NodeInputPartial):
     id: gql.ID
     name: Optional[str]
 
@@ -106,7 +106,7 @@ class StudentInput:
     school: "SchoolInputPartial"
 
 @gql.django.partial(models.Student)
-class StudentInputPartial:
+class StudentInputPartial(gql.NodeInputPartial):
     id: gql.ID
     first_name: Optional[str]
     last_name: Optional[str]
@@ -127,7 +127,7 @@ class UserInput:
     password: auto
 
 @gql.django.partial(custom_user.models.User)
-class UserInputPartial:
+class UserInputPartial(gql.NodeInputPartial):
     id: gql.ID
     first_name: Optional[str]
     last_name: Optional[str]
