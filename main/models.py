@@ -72,8 +72,8 @@ class Login(models.Model):
 
 
 class Rating(models.Model):
-    goal = models.ForeignKey(Goal, models.CASCADE, blank=True, null=True)
-    lesson = models.ForeignKey(Lesson, models.CASCADE, blank=True, null=True)
+    goal = models.ForeignKey(Goal, models.CASCADE)
+    lesson = models.ForeignKey(Lesson, models.CASCADE)
     score = models.IntegerField()
 
     class Meta:
