@@ -159,7 +159,6 @@ class Mutation:
     create_lesson: Lesson = login_required(gql.django.create_mutation(LessonInput))
     update_lesson: Lesson = login_required(gql.django.update_mutation(LessonInputPartial))
     delete_lesson: Lesson = login_required(gql.django.delete_mutation(gql.NodeInput))
-    create_rating: Rating = login_required(gql.django.create_mutation(RatingInput))
     create_user: User = login_required(gql.django.create_mutation(UserInput))
     update_user: User = login_required(gql.django.update_mutation(UserInputPartial))
     delete_user: User = login_required(gql.django.delete_mutation(gql.NodeInput))
