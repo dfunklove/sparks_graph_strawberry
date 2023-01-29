@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-from gqlauth.settings_type import GqlAuthSettings
 from os import path
 from pathlib import Path
 from strawberry.annotation import StrawberryAnnotation
@@ -152,16 +151,6 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
-# Used for gqlauth in dev/test
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-GQL_AUTH = GqlAuthSettings(
-    ALLOW_LOGIN_NOT_VERIFIED=True,
-    LOGIN_FIELDS=[StrawberryField(python_name="email", default=None, type_annotation=StrawberryAnnotation(str))],
-    LOGIN_REQUIRE_CAPTCHA=False,
-    REGISTER_REQUIRE_CAPTCHA=False,
-)
 
 GRAPHQL_JWT = {
     "JWT_AUTHENTICATE_INTROSPECTION": False,
