@@ -45,11 +45,7 @@ class GroupLesson(models.Model):
 
 
 class Lesson(models.Model):
-    behavior = models.IntegerField(blank=True, null=True)
-    brought_books = models.BooleanField(blank=True, null=True)
-    brought_instrument = models.BooleanField(blank=True, null=True)
     group_lesson = models.ForeignKey(GroupLesson, models.CASCADE, blank=True, null=True)
-    progress = models.IntegerField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     school = models.ForeignKey('School', models.CASCADE)
     student = models.ForeignKey('Student', models.CASCADE)
