@@ -227,8 +227,11 @@ class Mutation:
             lesson.time_out=g.time_out # from the group lesson
             if (s.rating_set != gql.UNSET) and s.rating_set.count:
                 lesson.rating_set.all().delete()
+                for g in lesson.student.goals.all():
+                    lesson.student.goals.remove(g)                
                 for r in s.rating_set:
                     lesson.rating_set.create(goal_id=r.goal_id, score=r.score)
+                    lesson.student.goals.add(r.goal_id)
             lesson.save()
         g.save()
         return cast(GroupLesson, g)
@@ -244,8 +247,11 @@ class Mutation:
         lesson.time_out=input.time_out
         if input.rating_set and input.rating_set.count:
             lesson.rating_set.all().delete()
+            for g in lesson.student.goals.all():
+                lesson.student.goals.remove(g)
             for r in input.rating_set:
                 lesson.rating_set.create(goal_id=r.goal_id, score=r.score)
+                lesson.student.goals.add(r.goal_id)
         lesson.save()
         return cast(Lesson, lesson)
 
