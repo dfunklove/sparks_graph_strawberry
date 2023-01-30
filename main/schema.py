@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.contrib.auth.middleware import get_user
+from strawberry import UNSET
 from strawberry.types.info import Info
 from strawberry_django import auto
 from strawberry_django.fields.types import ManyToOneInput, OneToManyInput
@@ -111,7 +112,6 @@ class RatingInput:
 @gql.django.partial(models.Rating)
 class RatingInputPartial(gql.NodeInputPartial):
     goal_id: gql.ID
-    lesson_id: gql.ID
     score: auto
 
 @gql.django.type(models.School)
@@ -183,6 +183,7 @@ class Query:
             params["id"] = id
         return custom_user.models.User.objects.filter(**params).first()
     
+    goals: list[Goal] = login_required(gql.django.field())
     lesson: Lesson = login_required(gql.django.field())
     lessons: list[Lesson] = login_required(gql.django.field())
     school: School = login_required(gql.django.field())
@@ -213,26 +214,46 @@ class Mutation:
         self,
         info: Info,
         id: gql.ID,
-        notes: str,
-        student_data: List[LessonInputPartial],
-        time_out: datetime,
+        notes: Optional[str] = None,
+        student_data: Optional[List[LessonInputPartial]] = None,
+        time_out: Optional[datetime] = None,
     ) -> GroupLesson:
         g = models.GroupLesson.objects.get(id=id)
-        if notes: g.notes=notes
-        if time_out: g.time_out=time_out
-        lessons = []
+        g.notes=notes
+        g.time_out=time_out
         for s in student_data:
-            lessons.append(models.Lesson(id=s.id, notes=s.notes))
-        if student_data.count:
-            models.Lesson.objects.bulk_update(lessons, ["notes"])
+            lesson = models.Lesson.objects.get(id=s.id)
+            lesson.notes=s.notes
+            lesson.time_out=g.time_out # from the group lesson
+            if (s.rating_set != gql.UNSET) and s.rating_set.count:
+                lesson.rating_set.all().delete()
+                for r in s.rating_set:
+                    lesson.rating_set.create(goal_id=r.goal_id, score=r.score)
+            lesson.save()
         g.save()
         return cast(GroupLesson, g)
+
+    @gql.django.input_mutation()
+    def update_lesson(
+        self,
+        info: Info,
+        input: LessonInputPartial,
+    ) -> Lesson:
+        lesson = models.Lesson.objects.get(id=input.id)
+        lesson.notes=input.notes
+        lesson.time_out=input.time_out
+        if input.rating_set and input.rating_set.count:
+            lesson.rating_set.all().delete()
+            for r in input.rating_set:
+                lesson.rating_set.create(goal_id=r.goal_id, score=r.score)
+        lesson.save()
+        return cast(Lesson, lesson)
 
     #create_group_lesson: GroupLesson = login_required(gql.django.create_mutation(GroupLessonInput))
     #update_group_lesson: GroupLesson = login_required(gql.django.update_mutation(GroupLessonInputPartial))
     #delete_group_lesson: GroupLesson = login_required(gql.django.delete_mutation(gql.NodeInput))
     create_lesson: Lesson = login_required(gql.django.create_mutation(LessonInput))
-    update_lesson: Lesson = login_required(gql.django.update_mutation(LessonInputPartial))
+    #update_lesson: Lesson = login_required(gql.django.update_mutation(LessonInputPartial))
     delete_lesson: Lesson = login_required(gql.django.delete_mutation(gql.NodeInput))
     create_user: User = login_required(gql.django.create_mutation(UserInput))
     update_user: User = login_required(gql.django.update_mutation(UserInputPartial))
