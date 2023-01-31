@@ -216,23 +216,23 @@ class Mutation:
         info: Info,
         input: GroupLessonInputPartial,
     ) -> GroupLesson:
-        g = models.GroupLesson.objects.get(id=input.id)
-        g.notes=input.notes
-        g.time_out=input.time_out
+        group_lesson = models.GroupLesson.objects.get(id=input.id)
+        group_lesson.notes=input.notes
+        group_lesson.time_out=input.time_out
         for s in input.lesson_set:
             lesson = models.Lesson.objects.get(id=s.id)
             lesson.notes=s.notes
-            lesson.time_out=g.time_out # from the group lesson
+            lesson.time_out=group_lesson.time_out # from the group lesson
             if (s.rating_set != gql.UNSET) and s.rating_set.count:
                 lesson.rating_set.all().delete()
                 for g in lesson.student.goals.all():
-                    lesson.student.goals.remove(g)                
+                    lesson.student.goals.remove(g)
                 for r in s.rating_set:
                     lesson.rating_set.create(goal_id=r.goal_id, score=r.score)
                     lesson.student.goals.add(r.goal_id)
             lesson.save()
-        g.save()
-        return cast(GroupLesson, g)
+        group_lesson.save()
+        return cast(GroupLesson, group_lesson)
 
     @gql.django.input_mutation()
     def update_lesson(
