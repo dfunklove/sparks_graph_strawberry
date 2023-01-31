@@ -184,6 +184,7 @@ class Query:
         return custom_user.models.User.objects.filter(**params).first()
     
     goals: list[Goal] = login_required(gql.django.field())
+    group_lesson: GroupLesson = login_required(gql.django.field())
     lesson: Lesson = login_required(gql.django.field())
     lessons: list[Lesson] = login_required(gql.django.field())
     school: School = login_required(gql.django.field())
@@ -213,15 +214,12 @@ class Mutation:
     def update_group_lesson(
         self,
         info: Info,
-        id: gql.ID,
-        notes: Optional[str] = None,
-        student_data: Optional[List[LessonInputPartial]] = None,
-        time_out: Optional[datetime] = None,
+        input: GroupLessonInputPartial,
     ) -> GroupLesson:
-        g = models.GroupLesson.objects.get(id=id)
-        g.notes=notes
-        g.time_out=time_out
-        for s in student_data:
+        g = models.GroupLesson.objects.get(id=input.id)
+        g.notes=input.notes
+        g.time_out=input.time_out
+        for s in input.lesson_set:
             lesson = models.Lesson.objects.get(id=s.id)
             lesson.notes=s.notes
             lesson.time_out=g.time_out # from the group lesson
