@@ -195,6 +195,7 @@ class Query:
 
 @gql.type
 class Mutation:
+    @login_required
     @gql.django.input_mutation
     def create_group_lesson(
         self,
@@ -210,6 +211,7 @@ class Mutation:
                 models.Lesson.objects.create(group_lesson_id=g.id, school_id=school_id, student_id=id, time_in=now, user_id=user_id)
         return cast(GroupLesson, g)
 
+    @login_required
     @gql.django.input_mutation
     def update_group_lesson(
         self,
@@ -234,6 +236,7 @@ class Mutation:
         group_lesson.save()
         return cast(GroupLesson, group_lesson)
 
+    @login_required
     @gql.django.input_mutation()
     def update_lesson(
         self,
