@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-oleav8)i)j%cv&9q0ve=s%w@n(^-oh=g-l6n&*@!^7j2m1c^9@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["loveit.dev","localhost"]
 
 
 # Application definition
@@ -141,6 +141,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGIN_REGEXES = [
 r"https?://localhost(:|/).*",
 r"https?://127.0.0.1(:|/).*",
+r"https?://loveit.dev(:|/).*",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
