@@ -173,6 +173,14 @@ class UserInputPartial(gql.NodeInputPartial):
 
 @gql.type
 class Query:
+    @gql.django.field
+    def open_group_lesson(user_id: gql.ID) -> Optional[GroupLesson]:
+        return models.GroupLesson.objects.filter(user_id=user_id, time_out__isnull=True).first()
+
+    @gql.django.field
+    def open_lesson(user_id: gql.ID) -> Optional[Lesson]:
+        return models.Lesson.objects.filter(user_id=user_id, time_out__isnull=True).first()
+
     @login_required
     @gql.django.field
     def user(self, email: Optional[str] = None, id: Optional[gql.ID] = None) -> Optional[User]:
