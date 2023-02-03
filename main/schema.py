@@ -175,6 +175,14 @@ class UserInputPartial(gql.NodeInputPartial):
 class Query:
     @login_required
     @gql.django.field
+    def lessons(user_id: Optional[gql.ID] = None) -> list[Lesson]:
+        params = {}
+        if (user_id):
+            params["user_id"] = user_id
+        return models.Lesson.objects.filter(**params)
+
+    @login_required
+    @gql.django.field
     def open_group_lesson(user_id: gql.ID) -> Optional[GroupLesson]:
         return models.GroupLesson.objects.filter(user_id=user_id, time_out__isnull=True).first()
 
@@ -196,7 +204,6 @@ class Query:
     goals: list[Goal] = login_required(gql.django.field())
     group_lesson: GroupLesson = login_required(gql.django.field())
     lesson: Lesson = login_required(gql.django.field())
-    lessons: list[Lesson] = login_required(gql.django.field())
     school: School = login_required(gql.django.field())
     schools: list[School] = login_required(gql.django.field())
     student: Student = login_required(gql.django.field())
