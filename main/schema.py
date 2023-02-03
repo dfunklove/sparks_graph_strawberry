@@ -181,7 +181,7 @@ class Query:
     @login_required
     @gql.django.field
     def open_lesson(user_id: gql.ID) -> Optional[Lesson]:
-        return models.Lesson.objects.filter(user_id=user_id, time_out__isnull=True).first()
+        return models.Lesson.objects.filter(user_id=user_id, group_lesson__isnull=True, time_out__isnull=True).first()
 
     @login_required
     @gql.django.field
