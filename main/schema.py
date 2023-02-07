@@ -175,6 +175,14 @@ class UserInputPartial(gql.NodeInputPartial):
 class Query:
     @login_required
     @gql.django.field
+    def group_lessons(user_id: Optional[gql.ID] = None) -> list[GroupLesson]:
+        params = {}
+        if (user_id):
+            params["user_id"] = user_id
+        return models.GroupLesson.objects.filter(**params)
+
+    @login_required
+    @gql.django.field
     def lessons(user_id: Optional[gql.ID] = None) -> list[Lesson]:
         params = {}
         if (user_id):
@@ -236,8 +244,8 @@ class Mutation:
         input: GroupLessonInputPartial,
     ) -> GroupLesson:
         group_lesson = models.GroupLesson.objects.get(id=input.id)
-        group_lesson.notes=input.notes
-        group_lesson.time_out=input.time_out
+        if input.notes    != gql.UNSET: group_lesson.notes=input.notes
+        if input.time_out != gql.UNSET: group_lesson.time_out=input.time_out
         for s in input.lesson_set:
             lesson = models.Lesson.objects.get(id=s.id)
             lesson.notes=s.notes
@@ -254,16 +262,16 @@ class Mutation:
         return cast(GroupLesson, group_lesson)
 
     @login_required
-    @gql.django.input_mutation()
+    @gql.django.input_mutation
     def update_lesson(
         self,
         info: Info,
         input: LessonInputPartial,
     ) -> Lesson:
         lesson = models.Lesson.objects.get(id=input.id)
-        lesson.notes=input.notes
-        lesson.time_out=input.time_out
-        if input.rating_set and input.rating_set.count:
+        if input.notes    != gql.UNSET: lesson.notes=input.notes
+        if input.time_out != gql.UNSET: lesson.time_out=input.time_out
+        if input.rating_set != gql.UNSET:
             lesson.rating_set.all().delete()
             for g in lesson.student.goals.all():
                 lesson.student.goals.remove(g)
