@@ -16,12 +16,13 @@ class Course(models.Model):
     end_date = models.DateField(blank=True, null=True)
     name = models.CharField(max_length=CHAR_FIELD_LEN)
     notes = models.TextField(blank=True, null=True)
-    school_id = models.BigIntegerField()
+    school = models.ForeignKey('School', models.CASCADE)
     start_date = models.DateField()
-    user_id = models.BigIntegerField()
+    user = models.ForeignKey(custom_user.models.User, models.CASCADE)
 
     class Meta:
         db_table = 'courses'
+        constraints = [models.UniqueConstraint(name='unique_courses_name_school_user', fields = ['name','school','user'])]
 
 
 class Goal(models.Model):
@@ -74,7 +75,7 @@ class Rating(models.Model):
 
     class Meta:
         db_table = 'ratings'
-
+        constraints = [models.UniqueConstraint(name='unique_ratings_lesson_and_goal', fields = ['lesson', 'goal'])]
 
 class School(models.Model):
     activated = models.BooleanField(blank=True, null=True)
@@ -82,6 +83,7 @@ class School(models.Model):
 
     class Meta:
         db_table = 'schools'
+        constraints = [models.UniqueConstraint(name='unique_schools_name', fields = ['name'])]
 
 
 class Student(models.Model):
@@ -95,6 +97,7 @@ class Student(models.Model):
 
     class Meta:
         db_table = 'students'
+        constraints = [models.UniqueConstraint(name='unique_students_name_school', fields = ['first_name','last_name','school'])]
 
 """ This is left as a reference since we have different user model that is compatible with Django auth.
 That model is defined in its own app.
