@@ -191,13 +191,12 @@ class Query:
 
     @login_required
     @gql.django.field
-    def open_group_lesson(user_id: gql.ID) -> Optional[GroupLesson]:
-        return models.GroupLesson.objects.filter(user_id=user_id, time_out__isnull=True).first()
-
-    @login_required
-    @gql.django.field
-    def open_lesson(user_id: gql.ID) -> Optional[Lesson]:
-        return models.Lesson.objects.filter(user_id=user_id, group_lesson__isnull=True, time_out__isnull=True).first()
+    def open_lesson(user_id: gql.ID) -> Optional[GroupLesson|Lesson]:
+        lesson = models.Lesson.objects.filter(user_id=user_id, time_out__isnull=True).first()
+        if lesson and lesson.group_lesson:
+            return lesson.group_lesson
+        else:
+            return lesson
 
     @login_required
     @gql.django.field
@@ -275,6 +274,7 @@ class Mutation:
             lesson.rating_set.all().delete()
             for g in lesson.student.goals.all():
                 lesson.student.goals.remove(g)
+            c = lesson.rating_set.count()
             for r in input.rating_set:
                 lesson.rating_set.create(goal_id=r.goal_id, score=r.score)
                 lesson.student.goals.add(r.goal_id)
