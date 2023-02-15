@@ -179,7 +179,7 @@ class Query:
         params = {}
         if (user_id):
             params["user_id"] = user_id
-        return models.GroupLesson.objects.filter(**params)
+        return models.GroupLesson.objects.filter(**params).order_by("-time_in")
 
     @login_required
     @gql.django.field
@@ -187,7 +187,7 @@ class Query:
         params = {}
         if (user_id):
             params["user_id"] = user_id
-        return models.Lesson.objects.filter(**params)
+        return models.Lesson.objects.filter(**params).order_by("-time_in")
 
     @login_required
     @gql.django.field
