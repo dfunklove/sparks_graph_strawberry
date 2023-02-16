@@ -184,7 +184,7 @@ class Query:
     @login_required
     @gql.django.field
     def lessons(user_id: Optional[gql.ID] = None) -> list[Lesson]:
-        params = {}
+        params = { "group_lesson_id__isnull": True }
         if (user_id):
             params["user_id"] = user_id
         return models.Lesson.objects.filter(**params).order_by("-time_in")
