@@ -34,6 +34,7 @@ class GroupLesson:
     id: gql.ID
     lesson_set: List["Lesson"]
     notes: auto
+    school: "School"
     time_in: auto
     time_out: auto
     user: "User"
@@ -42,6 +43,7 @@ class GroupLesson:
 class GroupLessonInput:
     lesson_set: List["LessonInputNested"]
     notes: auto
+    school: "SchoolInputPartial"
     time_in: auto
     time_out: auto
     user: "UserInputPartial"
@@ -51,6 +53,7 @@ class GroupLessonInputPartial(gql.NodeInputPartial):
     id: gql.ID
     lesson_set: Optional[List["LessonInputPartial"]]
     notes: Optional[str]
+    school: Optional["SchoolInputPartial"]
     time_in: Optional[datetime]
     time_out: Optional[datetime]
     user: Optional["UserInputPartial"]
@@ -224,11 +227,12 @@ class Mutation:
     def create_group_lesson(
         self,
         info: Info,
+        school_id: gql.ID,
         student_ids: List[gql.ID],
         user_id: gql.ID
     ) -> GroupLesson:
         now = datetime.utcnow()
-        g = models.GroupLesson.objects.create(time_in = now, user_id = user_id)
+        g = models.GroupLesson.objects.create(time_in = now, school_id = school_id, user_id = user_id)
         if student_ids.count:
             school_id = models.Student.objects.get(id=student_ids[0]).school.id
             for id in student_ids:

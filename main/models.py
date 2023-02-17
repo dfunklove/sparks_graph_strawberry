@@ -36,6 +36,7 @@ class Goal(models.Model):
 class GroupLesson(models.Model):
     course = models.ForeignKey(Course, models.SET_NULL, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
+    school = models.ForeignKey('School', models.CASCADE)
     time_in = models.DateTimeField()
     time_out = models.DateTimeField(blank=True, null=True)
     user = models.ForeignKey(custom_user.models.User, models.CASCADE)
