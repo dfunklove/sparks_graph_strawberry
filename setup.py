@@ -4,6 +4,7 @@ from setuptools import setup
 
 setup(name='sparks_graph',
     version='1.0',
+    python_requires='>=3.9',
     author='Daniel Lovette',
     author_email='dfunklove@gmail.com',
     url='https://github.com/dfunklove/sparks_graph',
