@@ -11,6 +11,6 @@ setup(name='sparks_graph',
     license='LICENSE.txt',
     description='GraphQL back-end for Sparksync',
     long_description=open('README.md').read(),
-    packages=['sparks_graph'],
+    packages=['custom_user','main'],
     install_requires=['django', 'django-cors-headers', 'django-extensions', 'django-use-email-as-username', 'strawberry-graphql-django', 'strawberry-django-plus', 'strawberry-django-jwt']
     )
